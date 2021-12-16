@@ -22,3 +22,7 @@
 
 * Tweak speed controls
 * Make FloatingDot and FloatingDotGroup update state with new parameters
+
+## [0.2.4] - 16-12-2021
+
+* Update Flutter version
