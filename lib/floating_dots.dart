@@ -30,7 +30,7 @@ class FloatingDotGroup extends StatefulWidget {
   final random = Random();
 
   FloatingDotGroup({
-    Key key,
+    Key? key,
     this.number = 25,
     this.direction = Direction.random,
     this.trajectory = Trajectory.random,
@@ -45,8 +45,8 @@ class FloatingDotGroup extends StatefulWidget {
 }
 
 class FloatingDotGroupState extends State<FloatingDotGroup> {
-  double radius;
-  int time;
+  double? radius;
+  int? time;
 
   List<Widget> buildDots() {
     List<Widget> dots = [];
@@ -121,17 +121,17 @@ class FloatingDotGroupState extends State<FloatingDotGroup> {
 class FloatingDot extends StatefulWidget {
   final Direction direction;
   final Trajectory trajectory;
-  final double radius;
-  final int time;
+  final double? radius;
+  final int? time;
   final Color color;
 
   FloatingDot({
-    Key key,
-    @required this.direction,
-    @required this.trajectory,
-    @required this.radius,
-    @required this.color,
-    @required this.time,
+    Key? key,
+    /*required*/ required this.direction,
+    required this.trajectory,
+    required this.radius,
+    required this.color,
+    required this.time,
   }) : super(key: key);
 
   @override
@@ -141,13 +141,13 @@ class FloatingDot extends StatefulWidget {
 class FloatingDotState extends State<FloatingDot>
     with SingleTickerProviderStateMixin {
   Random random = Random();
-  bool _vertical;
-  bool _inverseDir;
-  double _initialPosition;
-  double _destination;
-  double _start;
-  double _fraction;
-  AnimationController controller;
+  bool? _vertical;
+  bool? _inverseDir;
+  double? _initialPosition;
+  double? _destination;
+  double? _start;
+  double? _fraction;
+  AnimationController? controller;
 
   @override
   void initState() {
@@ -177,16 +177,16 @@ class FloatingDotState extends State<FloatingDot>
     }
     _start = 150 * random.nextDouble();
     controller = AnimationController(
-        duration: Duration(seconds: widget.time), vsync: this);
+        duration: Duration(seconds: widget.time!), vsync: this);
 
-    controller
+    controller!
       ..addListener(() {
         setState(() {
-          _fraction = controller.value;
+          _fraction = controller!.value;
         });
       });
 
-    controller.repeat();
+    controller!.repeat();
   }
 
   @override
@@ -209,8 +209,8 @@ class FloatingDotState extends State<FloatingDot>
       }
     }
     if (widget.time != oldWidget.time) {
-      controller.duration = Duration(seconds: widget.time);
-      controller.repeat();
+      controller!.duration = Duration(seconds: widget.time!);
+      controller!.repeat();
     }
   }
 
@@ -220,9 +220,9 @@ class FloatingDotState extends State<FloatingDot>
         painter: DotPainter(
       vertical: _vertical,
       inverseDir: _inverseDir,
-      initialPosition: _initialPosition,
-      destination: _destination,
-      radius: widget.radius,
+      initialPosition: _initialPosition!,
+      destination: _destination!,
+      radius: widget.radius!,
       start: _start,
       fraction: _fraction,
       color: widget.color,
@@ -233,27 +233,27 @@ class FloatingDotState extends State<FloatingDot>
 /// Paints the dot from parameters given by [FloatingDot]
 
 class DotPainter extends CustomPainter {
-  bool vertical;
-  bool inverseDir;
+  bool? vertical;
+  bool? inverseDir;
   double initialPosition;
   double destination;
   double radius;
-  double start;
-  double diameter;
-  double distance;
-  double fraction;
+  double? start;
+  late double diameter;
+  late double distance;
+  double? fraction;
   Color color;
   Paint _paint;
 
   DotPainter({
     this.vertical,
     this.inverseDir,
-    this.initialPosition,
-    this.destination,
-    this.radius,
+    required this.initialPosition,
+    required this.destination,
+    required this.radius,
     this.start,
     this.fraction,
-    this.color,
+    required this.color,
   }) : _paint = Paint() {
     _paint.color = color;
     diameter = radius * 2;
@@ -265,28 +265,28 @@ class DotPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Offset offset;
-    if (!this.vertical && this.inverseDir) {
+    late Offset offset;
+    if (!this.vertical! && this.inverseDir!) {
       offset = Offset(
-          -start - radius + (size.width + diameter + start) * fraction,
-          size.height * (initialPosition + distance * fraction));
-    } else if (this.vertical && this.inverseDir) {
-      offset = Offset(size.width * (initialPosition + distance * fraction),
-          -start - radius + (size.height + diameter + start) * fraction);
-    } else if (!this.vertical && !this.inverseDir) {
+          -start! - radius + (size.width + diameter + start!) * fraction!,
+          size.height * (initialPosition + distance * fraction!));
+    } else if (this.vertical! && this.inverseDir!) {
+      offset = Offset(size.width * (initialPosition + distance * fraction!),
+          -start! - radius + (size.height + diameter + start!) * fraction!);
+    } else if (!this.vertical! && !this.inverseDir!) {
       offset = Offset(
           size.width +
-              start +
+              start! +
               radius -
-              (size.width + diameter + start) * fraction,
-          size.height * (initialPosition + distance * fraction));
-    } else if (this.vertical && !this.inverseDir) {
+              (size.width + diameter + start!) * fraction!,
+          size.height * (initialPosition + distance * fraction!));
+    } else if (this.vertical! && !this.inverseDir!) {
       offset = Offset(
-          size.width * (initialPosition + distance * fraction),
+          size.width * (initialPosition + distance * fraction!),
           size.height +
-              start +
+              start! +
               radius -
-              (size.height + diameter + start) * fraction);
+              (size.height + diameter + start!) * fraction!);
     }
 
     canvas.drawCircle(offset, radius, _paint);
